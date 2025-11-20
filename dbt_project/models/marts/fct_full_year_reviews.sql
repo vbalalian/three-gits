@@ -8,7 +8,7 @@ reviews as (
 
 qualifying_restaurants as(
 
-    select * from {{ ref('dim_qualifying_restaurants') }}
+    select * from {{ ref('int_qualifying_restaurants') }}
     
 ),
 
