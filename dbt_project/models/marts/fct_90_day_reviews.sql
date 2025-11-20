@@ -6,9 +6,9 @@ year_reviews as (
 
 ),
 
-business_review_meta as (
+qualifying_restaurants as (
 
-    select * from {{ ref('int_business_review_meta') }}
+    select * from {{ ref('dim_qualifying_restaurants') }}
 
 ),
 
@@ -28,10 +28,10 @@ _90_day_reviews as (
 
     from year_reviews
 
-    left join business_review_meta
-    on year_reviews.business_id = business_review_meta.business_id
+    left join qualifying_restaurants
+    on year_reviews.business_id =  qualifying_restaurants.business_id
     where date <= date_add(
-        business_review_meta.first_review_date, INTERVAL 90 DAY
+        qualifying_restaurants.first_review_date, INTERVAL 90 DAY
         )
 
 )

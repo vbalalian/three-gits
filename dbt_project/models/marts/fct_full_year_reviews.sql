@@ -6,29 +6,10 @@ reviews as (
 
 ),
 
-business_review_meta as(
+qualifying_restaurants as(
 
-    select * from {{ ref('int_business_review_meta') }}
+    select * from {{ ref('dim_qualifying_restaurants') }}
     
-),
-
-first_90_count as (
-
-    select
-
-        reviews.business_id,
-        count(*) as cnt
-
-    from reviews
-
-    left join business_review_meta
-    on reviews.business_id = business_review_meta.business_id
-    where reviews.date <= date_add(
-        business_review_meta.first_review_date, INTERVAL 90 DAY
-        )
-
-    group by business_id
-
 ),
 
 full_year_reviews as (
@@ -47,17 +28,12 @@ full_year_reviews as (
 
     from reviews
 
-    left join business_review_meta
-    on business_review_meta.business_id = reviews.business_id
+    left join qualifying_restaurants
+    on qualifying_restaurants.business_id = reviews.business_id
 
-    left join first_90_count
-    on first_90_count.business_id = reviews.business_id
-    where business_review_meta.review_range_days > 365
-    and date(reviews.date) <= date_add(
-        date(business_review_meta.first_review_date), INTERVAL 365 DAY
+    where date(reviews.date) <= date_add(
+        date(qualifying_restaurants.first_review_date), INTERVAL 365 DAY
         )
-    and first_90_count.cnt > 2
-
 )
 
 select * from full_year_reviews
