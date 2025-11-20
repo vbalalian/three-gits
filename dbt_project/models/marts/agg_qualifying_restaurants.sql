@@ -2,7 +2,7 @@ with
 
 restaurants as (
 
-    select * from {{ ref('int_qualifying_restaurants') }}
+    select * from {{ ref('dim_qualifying_restaurants') }}
 
 ),
 
