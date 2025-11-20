@@ -23,7 +23,11 @@ business_review_meta as(
 
     case when date <= date_add(
       min(date) over (partition by business_id), interval 90 day
-      ) then 1 else 0 end as is_in_first_90
+      ) then 1 else 0 end as is_in_first_90,
+
+    case when date <= date_add(
+      min(date) over (partition by business_id), interval 365 day
+      ) then 1 else 0 end as is_in_first_365
 
   from source_reviews
 
@@ -38,7 +42,8 @@ aggregated as (
     last_review_date,
     review_range_days,
 
-    sum(is_in_first_90) as first_90_review_count
+    sum(is_in_first_90) as first_90_review_count,
+    sum(is_in_first_365) as first_365_review_count
 
   from business_review_meta
 
