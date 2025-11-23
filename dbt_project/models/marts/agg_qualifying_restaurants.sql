@@ -23,51 +23,95 @@ checkins as (
 
 ),
 
-aggregated as (
+_90_day_users as (
+
+    select * from {{ ref('agg_90_day_users') }}
+
+),
+
+avg_rating_90 as (
+
+    select
+
+        business_id,
+        round(avg(stars), 3) as avg_rating_90
+
+    from train_reviews
+
+    group by business_id
+
+),
+
+avg_rating_365 as (
+
+    select
+
+        business_id,
+        round(avg(stars), 3) as avg_rating_365
+
+    from full_reviews
+
+    group by business_id
+
+),
+
+combined as (
 
     select
 
         restaurants.business_id,
 
-        max(restaurants.name) as name,
-        max(restaurants.address) as address,
-        max(restaurants.city) as city,
-        max(restaurants.state) as state,
-        max(restaurants.postal_code) as postal_code,
-        max(restaurants.latitude) as latitude,
-        max(restaurants.longitude) as longitude,
-        max(restaurants.categories) as categories,
-        max(restaurants.first_review_date) as first_review_date,
-        max(restaurants.first_90_review_count) as first_90_review_count,
-        max(restaurants.first_365_review_count) as first_365_review_count,
+        restaurants.name,
+        restaurants.address,
+        restaurants.city,
+        restaurants.state,
+        restaurants.postal_code,
+        restaurants.latitude,
+        restaurants.longitude,
+        restaurants.categories,
+        restaurants.first_review_date,
+        restaurants.first_90_review_count,
+        restaurants.first_365_review_count,
 
-        round(avg(train_reviews.stars), 3) as avg_rating_90,
-        round(avg(full_reviews.stars), 3) as avg_rating_365,
+        avg_rating_90.avg_rating_90,
+        avg_rating_365.avg_rating_365,
 
-        max(checkins.sun_cnt) as sun_cnt,
-        max(checkins.mon_cnt) as mon_cnt,
-        max(checkins.tues_cnt) as tues_cnt,
-        max(checkins.wed_cnt) as wed_cnt,
-        max(checkins.thur_cnt) as thur_cnt,
-        max(checkins.fri_cnt) as fri_cnt,
-        max(checkins.sat_cnt) as sat_cnt,
-        max(checkins.morning_cnt) as morning_cnt,
-        max(checkins.afternoon_cnt) as afternoon_cnt,
-        max(checkins.evening_cnt) as evening_cnt,
-        max(checkins.late_cnt) as late_cnt
+        checkins.sun_cnt,
+        checkins.mon_cnt,
+        checkins.tues_cnt,
+        checkins.wed_cnt,
+        checkins.thur_cnt,
+        checkins.fri_cnt,
+        checkins.sat_cnt,
+        checkins.morning_cnt,
+        checkins.afternoon_cnt,
+        checkins.evening_cnt,
+        checkins.late_cnt,
+
+        _90_day_users.users,
+        _90_day_users.users_avg_reviews,
+        _90_day_users.users_avg_avg_stars,
+        _90_day_users.users_avg_fans,
+        _90_day_users.users_avg_cool,
+        _90_day_users.users_avg_useful,
+        _90_day_users.users_avg_funny,
+        _90_day_users.users_avg_compliments,
+        _90_day_users.users_avg_years_elite,
+        _90_day_users.users_avg_num_friends
 
     from restaurants
 
-    left join full_reviews
-    on full_reviews.business_id = restaurants.business_id
+    left join avg_rating_90
+    on avg_rating_90.business_id = restaurants.business_id
 
-    left join train_reviews
-    on train_reviews.business_id = restaurants.business_id
+    left join avg_rating_365
+    on avg_rating_365.business_id = restaurants.business_id
 
     left join checkins
     on checkins.business_id = restaurants.business_id
 
-    group by restaurants.business_id
+    left join _90_day_users
+    on _90_day_users.business_id = restaurants.business_id
 
 ),
 
@@ -99,9 +143,19 @@ final as (
         morning_cnt,
         afternoon_cnt,
         evening_cnt,
-        late_cnt
+        late_cnt,
+        users,
+        users_avg_reviews,
+        users_avg_avg_stars,
+        users_avg_fans,
+        users_avg_cool,
+        users_avg_useful,
+        users_avg_funny,
+        users_avg_compliments,
+        users_avg_years_elite,
+        users_avg_num_friends
 
-    from aggregated
+    from combined
 
 )
 
