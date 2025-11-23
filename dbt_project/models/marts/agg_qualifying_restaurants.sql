@@ -17,6 +17,12 @@ train_reviews as (
 
 ),
 
+checkins as (
+
+    select * from {{ ref('agg_restaurant_checkins') }}
+
+),
+
 aggregated as (
 
     select
@@ -36,7 +42,19 @@ aggregated as (
         max(restaurants.first_365_review_count) as first_365_review_count,
 
         round(avg(train_reviews.stars), 3) as avg_rating_90,
-        round(avg(full_reviews.stars), 3) as avg_rating_365
+        round(avg(full_reviews.stars), 3) as avg_rating_365,
+
+        max(checkins.sun_cnt) as sun_cnt,
+        max(checkins.mon_cnt) as mon_cnt,
+        max(checkins.tues_cnt) as tues_cnt,
+        max(checkins.wed_cnt) as wed_cnt,
+        max(checkins.thur_cnt) as thur_cnt,
+        max(checkins.fri_cnt) as fri_cnt,
+        max(checkins.sat_cnt) as sat_cnt,
+        max(checkins.morning_cnt) as morning_cnt,
+        max(checkins.afternoon_cnt) as afternoon_cnt,
+        max(checkins.evening_cnt) as evening_cnt,
+        max(checkins.late_cnt) as late_cnt
 
     from restaurants
 
@@ -46,8 +64,45 @@ aggregated as (
     left join train_reviews
     on train_reviews.business_id = restaurants.business_id
 
+    left join checkins
+    on checkins.business_id = restaurants.business_id
+
     group by restaurants.business_id
+
+),
+
+final as (
+
+    select
+    
+        business_id,
+        name,
+        address,
+        city,
+        state,
+        postal_code,
+        latitude,
+        longitude,
+        categories,
+        first_review_date,
+        first_90_review_count,
+        first_365_review_count,
+        avg_rating_90,
+        avg_rating_365,
+        sun_cnt,
+        mon_cnt,
+        tues_cnt,
+        wed_cnt,
+        thur_cnt,
+        fri_cnt,
+        sat_cnt,
+        morning_cnt,
+        afternoon_cnt,
+        evening_cnt,
+        late_cnt
+
+    from aggregated
 
 )
 
-select * from aggregated
+select * from final
