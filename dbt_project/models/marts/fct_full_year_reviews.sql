@@ -28,7 +28,7 @@ full_year_reviews as (
 
     from reviews
 
-    left join qualifying_restaurants
+    inner join qualifying_restaurants
     on qualifying_restaurants.business_id = reviews.business_id
 
     where date(reviews.date) <= date_add(
