@@ -28,7 +28,7 @@ _90_day_reviews as (
 
     from year_reviews
 
-    left join qualifying_restaurants
+    inner join qualifying_restaurants
     on year_reviews.business_id =  qualifying_restaurants.business_id
     where date <= date_add(
         qualifying_restaurants.first_review_date, INTERVAL 90 DAY
