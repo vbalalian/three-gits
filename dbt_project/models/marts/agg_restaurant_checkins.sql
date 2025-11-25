@@ -2,28 +2,7 @@ with
 
 checkins as (
   
-  select * from {{ ref('fct_checkins') }}
-
-),
-
-restaurants as (
-
-  select * from {{ ref('dim_restaurants') }}
-
-),
-
-restaurant_checkins as (
-
-  select
-
-    checkins.business_id,
-    checkins.checkin_dayofweek,
-    checkins.checkin_hour
-
-  from checkins
-
-  inner join restaurants
-  on restaurants.business_id = checkins.business_id
+  select * from {{ ref('int_90_day_restaurant_checkins') }}
 
 ),
 
@@ -46,7 +25,7 @@ binned as (
     count(case when checkin_hour >= 22 or checkin_hour < 4 then 1 end) as evening_cnt,
     count(case when checkin_hour >= 4 and checkin_hour < 10 then 1 end) as late_cnt
 
-  from restaurant_checkins
+  from checkins
   group by business_id
 
 ),
