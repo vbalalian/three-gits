@@ -17,6 +17,7 @@ qual_checkins as (
   select
 
     checkins.business_id,
+    qual_restaurants.postal_code,
     checkins.checkin_datetime,
     checkins.checkin_date,
     checkins.checkin_hour,
@@ -37,6 +38,7 @@ final as (
   select
 
     business_id,
+    postal_code,
     checkin_datetime,
     checkin_date,
     checkin_hour,

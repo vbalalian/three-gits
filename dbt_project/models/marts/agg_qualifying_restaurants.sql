@@ -29,12 +29,18 @@ _90_day_users as (
 
 ),
 
+zip_info as (
+
+    select * from {{ ref('int_restaurant_zipcode_agg') }}
+
+),
+
 avg_rating_90 as (
 
     select
 
         business_id,
-        round(avg(stars), 3) as avg_rating_90
+        round(avg(stars), 2) as avg_rating_90
 
     from train_reviews
 
@@ -47,7 +53,7 @@ avg_rating_365 as (
     select
 
         business_id,
-        round(avg(stars), 3) as avg_rating_365
+        round(avg(stars), 2) as avg_rating_365
 
     from full_reviews
 
@@ -97,7 +103,15 @@ combined as (
         _90_day_users.users_avg_funny,
         _90_day_users.users_avg_compliments,
         _90_day_users.users_avg_years_elite,
-        _90_day_users.users_avg_num_friends
+        _90_day_users.users_avg_num_friends,
+
+        round((avg_rating_90.avg_rating_90 - zip_info.avg_rating_90), 2) as rating_diff_zip_avg_90,
+
+        round((checkins.morning_cnt + checkins.afternoon_cnt + checkins.evening_cnt + checkins.late_cnt - zip_info.avg_checkins_90), 2) as checkins_diff_zip_avg_90,
+
+        round((restaurants.first_90_review_count - zip_info.avg_num_reviews_90), 2) as reviews_diff_zip_avg_90,
+
+        round((_90_day_users.users - zip_info.avg_users), 2) as users_diff_zip_avg_90
 
     from restaurants
 
@@ -112,6 +126,9 @@ combined as (
 
     left join _90_day_users
     on _90_day_users.business_id = restaurants.business_id
+
+    left join zip_info
+    on zip_info.zip = restaurants.postal_code
 
 ),
 
@@ -153,7 +170,11 @@ final as (
         users_avg_funny,
         users_avg_compliments,
         users_avg_years_elite,
-        users_avg_num_friends
+        users_avg_num_friends,
+        rating_diff_zip_avg_90,
+        checkins_diff_zip_avg_90,
+        reviews_diff_zip_avg_90,
+        users_diff_zip_avg_90
 
     from combined
 
