@@ -67,7 +67,7 @@ Raw Yelp JSON data (hosted in Google Cloud Storage) is transformed via **dbt + B
 
 ## Analysis
 
-The complete analysis notebook is available in [`analysis/`](./analysis/). It includes all code, visualizations, and statistical test results.
+The complete analysis notebook is available [here](./analysis/bana320_three_gits.ipynb). It includes all code, visualizations, and statistical test results.
 
 > **Note:** The data pipeline requires access to a private Google Cloud project. The notebook is provided for review purposes; reproducing it would require setting up your own BigQuery environment with the Yelp Open Dataset.
 
