@@ -2,7 +2,8 @@
 
 **Course:** BANA 320 - Predictive Analytics  
 **Dataset:** [Yelp Open Dataset](https://business.yelp.com/data/resources/open-dataset/)  
-**Group Name:** Three Gits  
+**Group Name:** Three Gits 
+**Team:** Vincent Balalian, Sameer Patel, Arish Patel      
 
 [![CD](https://github.com/vbalalian/three-gits/actions/workflows/cd.yml/badge.svg)](https://github.com/vbalalian/three-gits/actions/workflows/cd.yml)
 
