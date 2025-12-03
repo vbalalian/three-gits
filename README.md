@@ -13,7 +13,7 @@
 
 **Target Variable:** Average star rating 12 months after first review
 
-**Result:** No — sentiment features did not significantly improve prediction accuracy when geographic and user-based context features were already included.
+**Result:** No - sentiment features did not significantly improve prediction accuracy when geographic and user-based context features were already included.
 
 ## Data Pipeline
 
@@ -52,11 +52,11 @@ Raw Yelp JSON data (hosted in Google Cloud Storage) is transformed via **dbt + B
 
 ## Key Findings
 
-1. **Geographic context subsumes sentiment signal** — Zip-code comparison features (rating vs. local average, etc.) already capture competitive positioning that sentiment would otherwise indicate.
+1. **Geographic context subsumes sentiment signal** - Zip-code comparison features (rating vs. local average, etc.) already capture competitive positioning that sentiment would otherwise indicate.
 
-2. **Early rating is the dominant predictor** — The 90-day average rating had the highest mutual information with 1-year rating by a wide margin.
+2. **Early rating is the dominant predictor** - The 90-day average rating had the highest mutual information with 1-year rating by a wide margin.
 
-3. **Reviewer quality correlates with outcomes** — User characteristics (average stars given, engagement metrics) ranked among top predictive features.
+3. **Reviewer quality correlates with outcomes** - User characteristics (average stars given, engagement metrics) ranked among top predictive features.
 
 ## Tools & Technologies
 
@@ -72,4 +72,4 @@ The complete analysis notebook is available [here](./analysis/bana320_three_gits
 
 > **Note:** The data pipeline requires access to a private Google Cloud project. The notebook is provided for review purposes; reproducing it would require setting up your own BigQuery environment with the Yelp Open Dataset.
 
-*BANA 320 — Fall 2025*
+*BANA 320 - Fall 2025*
