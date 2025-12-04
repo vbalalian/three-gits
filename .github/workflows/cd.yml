@@ -33,4 +33,4 @@ jobs:
     - name: Run dbt build
       run: |
         cd dbt_project
-        dbt build -s state:modified+
+        dbt build
