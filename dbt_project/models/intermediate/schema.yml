@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: int_restaurant_review_meta
+    description: >
+      Aggregated review metadata per restaurant including first/last review dates,
+      review span, and counts for 90-day and 365-day windows
+    columns:
+      - name: business_id
+        description: Unique identifier for the restaurant
+        tests:
+          - unique
+          - not_null
+      - name: first_review_date
+        description: Date of the restaurant's first review
+      - name: last_review_date
+        description: Date of the restaurant's most recent review
+      - name: review_range_days
+        description: Number of days between first and last review
+      - name: first_90_review_count
+        description: Number of reviews received in the first 90 days
+      - name: first_365_review_count
+        description: Number of reviews received in the first 365 days
+
+  - name: int_90_day_restaurant_checkins
+    description: Checkin data filtered to first 90 days after first review for qualifying restaurants
+    columns:
+      - name: business_id
+        description: Restaurant identifier
+        tests:
+          - not_null
+      - name: postal_code
+        description: Restaurant ZIP code
+      - name: checkin_datetime
+        description: Full datetime of the checkin
+      - name: checkin_date
+        description: Date portion of the checkin
+      - name: checkin_hour
+        description: Hour of the checkin (0-23)
+      - name: checkin_dayofweek
+        description: Day of week (1=Sunday to 7=Saturday)
+
+  - name: int_restaurant_zipcode_agg
+    description: >
+      Zipcode-level aggregations for benchmarking restaurants against neighborhood averages.
+      Used to create differential features comparing each restaurant to its local market.
+    columns:
+      - name: zip
+        description: ZIP/postal code
+        tests:
+          - unique
+          - not_null
+      - name: avg_num_reviews_90
+        description: Average number of reviews in first 90 days across restaurants in this ZIP
+      - name: avg_rating_90
+        description: Average star rating in first 90 days across restaurants in this ZIP
+      - name: avg_checkins_90
+        description: Average checkin count in first 90 days across restaurants in this ZIP
+      - name: avg_users
+        description: Average number of unique reviewers in first 90 days across restaurants in this ZIP

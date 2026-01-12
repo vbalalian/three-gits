@@ -1,0 +1,199 @@
+version: 2
+
+models:
+  - name: dim_restaurants
+    description: Base dimension table for all restaurants
+    columns:
+      - name: business_id
+        description: Unique identifier for the restaurant
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_qualifying_restaurants
+    description: >
+      Restaurants meeting study criteria: 365+ days of review history,
+      3+ reviews in first 90 days, and 10+ reviews in first year
+    columns:
+      - name: business_id
+        description: Unique identifier for the restaurant
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: Restaurant name
+      - name: address
+        description: Street address
+      - name: city
+        description: City name
+      - name: state
+        description: State code
+      - name: postal_code
+        description: ZIP/postal code
+      - name: latitude
+        description: Geographic latitude
+      - name: longitude
+        description: Geographic longitude
+      - name: stars
+        description: Current average star rating
+      - name: review_count
+        description: Total number of reviews
+      - name: is_open
+        description: Whether currently open (1) or closed (0)
+      - name: categories
+        description: Comma-separated list of categories
+      - name: first_review_date
+        description: Date of first review
+      - name: first_90_review_count
+        description: Number of reviews in first 90 days
+      - name: first_365_review_count
+        description: Number of reviews in first 365 days
+
+  - name: dim_qualifying_users
+    description: Users who reviewed qualifying restaurants in their first 90 days
+    columns:
+      - name: user_id
+        description: Unique identifier for the user
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_restaurant_reviews
+    description: All reviews for restaurants
+    columns:
+      - name: review_id
+        description: Unique identifier for the review
+        tests:
+          - unique
+          - not_null
+      - name: business_id
+        description: Restaurant being reviewed
+        tests:
+          - not_null
+
+  - name: fct_checkins
+    description: Checkin events with extracted date/time components
+    columns:
+      - name: business_id
+        description: Business identifier
+        tests:
+          - not_null
+      - name: checkin_datetime
+        description: Full datetime of checkin
+      - name: checkin_date
+        description: Date of checkin
+      - name: checkin_hour
+        description: Hour of checkin (0-23)
+      - name: checkin_dayofweek
+        description: Day of week (1=Sunday to 7=Saturday)
+
+  - name: fct_full_year_reviews
+    description: Reviews from first 365 days for qualifying restaurants
+    columns:
+      - name: review_id
+        description: Unique identifier for the review
+        tests:
+          - unique
+          - not_null
+      - name: business_id
+        description: Restaurant being reviewed
+      - name: text
+        description: Full review text
+
+  - name: fct_90_day_reviews
+    description: >
+      Reviews from first 90 days for qualifying restaurants.
+      Used for sentiment analysis feature extraction.
+    columns:
+      - name: review_id
+        description: Unique identifier for the review
+        tests:
+          - unique
+          - not_null
+      - name: business_id
+        description: Restaurant being reviewed
+      - name: text
+        description: Full review text for sentiment analysis
+
+  - name: agg_90_day_users
+    description: Aggregated user statistics for reviewers in first 90 days per restaurant
+    columns:
+      - name: business_id
+        description: Restaurant identifier
+        tests:
+          - unique
+          - not_null
+      - name: users
+        description: Count of unique reviewers in first 90 days
+      - name: users_avg_reviews
+        description: Average review count across users
+      - name: users_avg_avg_stars
+        description: Average of users' average star ratings
+      - name: users_avg_fans
+        description: Average fan count across users
+      - name: users_avg_cool
+        description: Average cool votes across users
+      - name: users_avg_useful
+        description: Average useful votes across users
+      - name: users_avg_funny
+        description: Average funny votes across users
+      - name: users_avg_compliments
+        description: Average compliments across users
+      - name: users_avg_years_elite
+        description: Average years of elite status across users
+      - name: users_avg_num_friends
+        description: Average friend count across users
+
+  - name: agg_restaurant_checkins
+    description: Checkin counts binned by day of week and time of day for first 90 days
+    columns:
+      - name: business_id
+        description: Restaurant identifier
+        tests:
+          - unique
+          - not_null
+      - name: sun_cnt
+        description: Sunday checkin count
+      - name: mon_cnt
+        description: Monday checkin count
+      - name: tues_cnt
+        description: Tuesday checkin count
+      - name: wed_cnt
+        description: Wednesday checkin count
+      - name: thur_cnt
+        description: Thursday checkin count
+      - name: fri_cnt
+        description: Friday checkin count
+      - name: sat_cnt
+        description: Saturday checkin count
+      - name: morning_cnt
+        description: Morning checkins (10am-4pm)
+      - name: afternoon_cnt
+        description: Afternoon checkins (4pm-10pm)
+      - name: evening_cnt
+        description: Evening checkins (10pm-4am)
+      - name: late_cnt
+        description: Late night checkins (4am-10am)
+
+  - name: agg_qualifying_restaurants
+    description: >
+      Main ML feature table combining restaurant attributes, ratings, checkin patterns,
+      user statistics, and zipcode-level differential features. Target variable is avg_rating_365.
+    columns:
+      - name: business_id
+        description: Unique identifier for the restaurant
+        tests:
+          - unique
+          - not_null
+      - name: avg_rating_90
+        description: Average star rating from first 90 days (feature)
+      - name: avg_rating_365
+        description: Average star rating from first 365 days (target variable)
+      - name: rating_diff_zip_avg_90
+        description: Difference between restaurant's 90-day rating and zipcode average
+      - name: checkins_diff_zip_avg_90
+        description: Difference between restaurant's 90-day checkins and zipcode average
+      - name: reviews_diff_zip_avg_90
+        description: Difference between restaurant's 90-day review count and zipcode average
+      - name: users_diff_zip_avg_90
+        description: Difference between restaurant's 90-day user count and zipcode average
