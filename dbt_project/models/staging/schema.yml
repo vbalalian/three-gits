@@ -1,0 +1,103 @@
+version: 2
+
+models:
+  - name: stg_restaurants
+    description: Filtered businesses that are categorized as restaurants
+    columns:
+      - name: business_id
+        description: Unique identifier for the restaurant
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: Restaurant name
+      - name: address
+        description: Street address
+      - name: city
+        description: City name
+      - name: state
+        description: State code
+      - name: postal_code
+        description: ZIP/postal code
+      - name: latitude
+        description: Geographic latitude
+      - name: longitude
+        description: Geographic longitude
+      - name: stars
+        description: Current average star rating (1-5)
+      - name: review_count
+        description: Total number of reviews
+      - name: is_open
+        description: Whether the restaurant is currently open (1) or closed (0)
+      - name: categories
+        description: Comma-separated list of business categories
+
+  - name: stg_restaurant_reviews
+    description: Reviews filtered to only include those for restaurants
+    columns:
+      - name: review_id
+        description: Unique identifier for the review
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        description: ID of the user who wrote the review
+        tests:
+          - not_null
+      - name: business_id
+        description: ID of the restaurant being reviewed
+        tests:
+          - not_null
+      - name: stars
+        description: Star rating given (1-5)
+      - name: date
+        description: Date the review was written
+      - name: text
+        description: Full text content of the review
+      - name: useful
+        description: Number of useful votes received
+      - name: funny
+        description: Number of funny votes received
+      - name: cool
+        description: Number of cool votes received
+
+  - name: stg_users
+    description: User profiles with calculated metrics for users who have written at least one review
+    columns:
+      - name: user_id
+        description: Unique identifier for the user
+        tests:
+          - unique
+          - not_null
+      - name: review_count
+        description: Total number of reviews written by the user
+      - name: average_stars
+        description: Average star rating across all user reviews
+      - name: yelping_since
+        description: Date the user joined Yelp
+      - name: fans
+        description: Number of fans the user has
+      - name: cool
+        description: Total cool votes received across all reviews
+      - name: useful
+        description: Total useful votes received across all reviews
+      - name: funny
+        description: Total funny votes received across all reviews
+      - name: compliments
+        description: Total compliments received
+      - name: years_elite
+        description: Number of years the user has had elite status
+      - name: num_friends
+        description: Number of friends the user has on Yelp
+
+  - name: stg_checkins
+    description: Flattened checkin data with one row per checkin event
+    columns:
+      - name: business_id
+        description: ID of the business checked into
+        tests:
+          - not_null
+      - name: checkin_datetime
+        description: Datetime of the checkin event
+        tests:
+          - not_null

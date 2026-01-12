@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+  - name: rating_prediction_analysis
+    label: Restaurant Rating Prediction Analysis
+    type: analysis
+    maturity: medium
+    description: >
+      Jupyter notebook for predicting 1-year restaurant ratings using features
+      from the first 90 days of reviews. Compares model performance with and
+      without sentiment features extracted from review text.
+    owner:
+      name: Three Gits
+      email: threegits@csun.edu
+    depends_on:
+      - ref('agg_qualifying_restaurants')
+      - ref('fct_90_day_reviews')
+    url: "https://github.com/vbalalian/three-gits/blob/main/analysis/bana320_three_gits.ipynb"

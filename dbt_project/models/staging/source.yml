@@ -2,9 +2,15 @@ version: 2
 
 sources:
   - name: raw_yelp_data
+    description: Raw tables from the Yelp Open Dataset
     tables:
       - name: business
+        description: Business information including location, categories, ratings, and operating status
       - name: checkin
+        description: Checkin timestamps for each business (comma-separated datetime strings)
       - name: review
+        description: User reviews with star ratings, text, and engagement metrics (useful, funny, cool)
       - name: tip
+        description: Short tips left by users for businesses
       - name: user
+        description: User profiles including review stats, social connections, and elite status
